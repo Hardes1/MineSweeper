@@ -56,7 +56,6 @@ def error_extra_mines():
     print(YELLOW + 'Число мин не может превышать размера поля')
 
 
-
 def error_no_flags_here():
     print(YELLOW + 'В данной клетке нет флага.')
 
@@ -193,16 +192,21 @@ def main():
                         player_field[y][x] = '#'
                         flags_left += 1
                     q = deque()
+                    s = set()
                     q.append((y, x))
+                    s.add((y, x))
                     while len(q) > 0:
                         y, x = q.popleft()
+                        s.remove((y, x))
                         player_field[y][x] = mines_field[y][x]
                         if player_field[y][x] == '.':
                             for di in range(-1, 2):
                                 for dj in range(-1, 2):
                                     if check_borders(x + dj, y + di, n, m) and mines_field[y + di][
-                                        x + dj] != '*' and player_field[y + di][x + dj] == '#':
+                                        x + dj] != '*' and player_field[y + di][x + dj] == '#' and (
+                                    y + di, x + dj) not in s:
                                         q.append((y + di, x + dj))
+                                        s.add((y+di, x + dj))
                     step += 1
                 elif command[0].lower() == 'flag' and command[1].isnumeric() and command[2].isnumeric():
                     x, y = int(command[1]), int(command[2])
