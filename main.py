@@ -8,7 +8,7 @@ def greetings():
 
 def input_start():
     print('если хотите начать новую игру - введите \'new\'')
-    print('Если хотите загрузить игру - введите \'load <path>\', где path - путь до игры на вашем компьютере')
+    print('Если хотите загрузить игру - введите \'load <filename>\', где filename - имя сохранённого файла')
     print('Если хотите выйти из игры - введите \'exit\'')
 
 
@@ -18,11 +18,15 @@ def input_dimensions():
 
 
 def input_move():
-    print('\'Save filename.txt\' - сохранить файл')
+    print('\'Save <filename>\' - сохранить файл с именем filename')
     print('\'main\' - вернуться в главное меню')
     print('\'Open X Y\' - открыть клетку с координатами (X, Y).')
     print('\'Flag X Y\' - поставить флажок в клетку с координатами (X, Y).')
     print('\'Remove X Y\' - удалить флажок из клетки с координатами (X, Y).')
+
+
+def successful_save(filename):
+    print('Ваша игра успешно сохранена и находится в файле: %file' % filename)
 
 
 def error_input():
@@ -115,11 +119,20 @@ def again():
 
 
 def save_game(players_field, mines_field, step, flags_left, filename):
-    pass
+    # TODO: Encrypt data
+    with open(filename + '.txt', 'w') as file:
+        # в первой строке 4 числа: n, m, step, flags_left
+        a = [len(players_field), len(players_field[0]), step, flags_left]
+        file.write(' '.join(list(map(str, a))) + '\n')
+        for i in range(len(players_field)):
+            file.write(''.join(players_field[i]) + '\n')
+        for i in range(len(players_field)):
+            file.write(''.join(mines_field[i]) + '\n')
+        successful_save()
 
 
-def play_game(players_field=[], mines_field=[], step=0, flags_left=0):
-    if not players_field or not mines_field:
+def play_game(player_field=[], mines_field=[], step=0, flags_left=0):
+    if not player_field or not mines_field:
         flag = True
         while flag:
             flag = False
@@ -150,6 +163,8 @@ def play_game(players_field=[], mines_field=[], step=0, flags_left=0):
 
         if command[0].lower() == 'main' and len(command) == 1:
             return 1
+        elif command[0].lower() == 'save' and len(command) == 2:
+            save_game(player_field, mines_field, step, flags_left, command[1])
         elif len(command) != 3:
             error_input()
         elif command[0].lower() == 'open' and command[1].isnumeric() and command[2].isnumeric():
