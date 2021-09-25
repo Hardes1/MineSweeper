@@ -26,7 +26,11 @@ def input_move():
 
 
 def successful_save(filename):
-    print('Ваша игра успешно сохранена и находится в файле: %file' % filename)
+    print('Ваша игра успешно сохранена и находится в файле: ' + filename)
+
+
+def error_file_read():
+    print('Файла который вы пытаетесь открыть не существует')
 
 
 def error_input():
@@ -128,7 +132,24 @@ def save_game(players_field, mines_field, step, flags_left, filename):
             file.write(''.join(players_field[i]) + '\n')
         for i in range(len(players_field)):
             file.write(''.join(mines_field[i]) + '\n')
-        successful_save()
+        successful_save(filename)
+
+
+def load_game(filename):
+    # TODO: decrypt data
+    try:
+        file = open(filename + '.txt', 'r')
+        n, m, step, flags_left = map(int, file.readline().rstrip('\n').split())
+        player_field = [[]] * n
+        mines_field = [[]] * n
+        for i in range(n):
+            player_field[i] = list(file.readline().rstrip('\n'))
+        for i in range(n):
+            mines_field[i] = list(file.readline().rstrip('\n'))
+        return player_field, mines_field, step, flags_left
+    except IOError:
+        error_file_read()
+        return -1, -1, -1, -1
 
 
 def play_game(player_field=[], mines_field=[], step=0, flags_left=0):
@@ -280,7 +301,12 @@ def main():
                 continue
             return
         elif command[0].lower() == 'load' and len(command) == 2:
-            pass
+            player_field, mines_field, step, flags_left = load_game(command[1])
+            if player_field != -1:
+                result = play_game(player_field, mines_field, step, flags_left)
+                if result == 1:
+                    continue
+                return
 
         elif command[0].lower() == 'exit' and len(command) == 1:
             end()
