@@ -135,6 +135,7 @@ def save_game(players_field, mines_field, step, flags_left, filename):
         successful_save(filename)
 
 
+
 def load_game(filename):
     # TODO: decrypt data
     try:
@@ -146,6 +147,7 @@ def load_game(filename):
             player_field[i] = list(file.readline().rstrip('\n'))
         for i in range(n):
             mines_field[i] = list(file.readline().rstrip('\n'))
+        file.close()
         return player_field, mines_field, step, flags_left
     except IOError:
         error_file_read()
