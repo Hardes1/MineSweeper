@@ -23,7 +23,8 @@ def input_start():
 
 def input_dimensions():
     print(GREEN +
-          'Введите параметры поля в формате \'n m k\', где n - число строк, m - число столбцов, k - число мин')
+          'Введите параметры поля в формате \'n m k\', где n - число строк, m - число столбцов, k - число мин.')
+    print('1<=n<=255, 1<=m<=255, 0<=k<n*n')
 
 
 def input_move():
@@ -41,7 +42,7 @@ def error_set_flag():
 
 
 def error_dimension():
-    print(YELLOW + 'Никакая из размерностей не может быть равна нулю и число мин не может быть равно нулю.')
+    print(YELLOW + 'Никакая из размерностей не может быть равна нулю.')
 
 
 def error_open():
@@ -139,7 +140,7 @@ def main():
                     error_input()
                     continue
                 n, m, mines = map(int, parameters)
-                if n == 0 or m == 0:
+                if n <= 0 or m <= 0 or mines < 0 or n > 255 or n > 255:
                     flag = True
                     error_dimension()
                     continue
@@ -204,9 +205,9 @@ def main():
                                 for dj in range(-1, 2):
                                     if check_borders(x + dj, y + di, n, m) and mines_field[y + di][
                                         x + dj] != '*' and player_field[y + di][x + dj] == '#' and (
-                                    y + di, x + dj) not in s:
+                                            y + di, x + dj) not in s:
                                         q.append((y + di, x + dj))
-                                        s.add((y+di, x + dj))
+                                        s.add((y + di, x + dj))
                     step += 1
                 elif command[0].lower() == 'flag' and command[1].isnumeric() and command[2].isnumeric():
                     x, y = int(command[1]), int(command[2])
@@ -239,6 +240,9 @@ def main():
                         continue
                     player_field[y][x] = '#'
                     flags_left += 1
+                else:
+                    error_input()
+
             if can_open_any(player_field) == 1:
                 win()
                 print_all_field(player_field)
