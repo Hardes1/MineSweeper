@@ -339,7 +339,6 @@ def main():
                 return
 
         elif command[0].lower() == 'exit' and len(command) == 1:
-            end()
             break
         else:
             error_input()
@@ -347,4 +346,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    print('Спасибо за игру!')
+    end()
