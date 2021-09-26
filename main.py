@@ -122,18 +122,42 @@ def again():
     print('Если хотите завершить работу программы введите что угодно, кроме \'main\'')
 
 
-def save_game(players_field, mines_field, step, flags_left, filename):
+def encrypt_array(a):
+    n = len(a)
+    m = len(a[0])
+    b = [[0] * m for i in range(n)]
+    for i in range(n):
+        for j in range(m):
+            s = ord(a[i][j])
+            s += 10 + i + j
+            b[i][j] = chr(s)
+    return b
+
+
+def decrypt_array(a):
+    n = len(a)
+    m = len(a[0])
+    for i in range(n):
+        for j in range(m):
+            s = ord(a[i][j])
+            s -= 10 + i + j
+            a[i][j] = chr(s)
+    return a
+
+
+def save_game(player_field, mines_field, step, flags_left, filename):
     # TODO: Encrypt data
     with open(filename + '.txt', 'w') as file:
         # в первой строке 4 числа: n, m, step, flags_left
-        a = [len(players_field), len(players_field[0]), step, flags_left]
+        a = [len(player_field), len(player_field[0]), step, flags_left]
+        encrypted_player_field = encrypt_array(player_field)
+        encrypted_mines_field = encrypt_array(mines_field)
         file.write(' '.join(list(map(str, a))) + '\n')
-        for i in range(len(players_field)):
-            file.write(''.join(players_field[i]) + '\n')
-        for i in range(len(players_field)):
-            file.write(''.join(mines_field[i]) + '\n')
+        for i in range(len(encrypted_player_field)):
+            file.write(''.join(encrypted_player_field[i]) + '\n')
+        for i in range(len(encrypted_mines_field)):
+            file.write(''.join(encrypted_mines_field[i]) + '\n')
         successful_save(filename)
-
 
 
 def load_game(filename):
@@ -147,6 +171,8 @@ def load_game(filename):
             player_field[i] = list(file.readline().rstrip('\n'))
         for i in range(n):
             mines_field[i] = list(file.readline().rstrip('\n'))
+        player_field = decrypt_array(player_field)
+        mines_field = decrypt_array(mines_field)
         file.close()
         return player_field, mines_field, step, flags_left
     except IOError:
@@ -179,6 +205,8 @@ def play_game(player_field=[], mines_field=[], step=0, flags_left=0):
         mines_field = [['.'] * m for i in range(n)]
         flags_left = mines
         step = 0
+    else:
+        n, m = len(player_field), len(player_field[0])
     while can_open_any(player_field) > 1:
         print_all_field(player_field)
         input_move()
