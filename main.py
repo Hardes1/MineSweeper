@@ -146,7 +146,7 @@ def decrypt_array(a):
 
 
 def save_game(player_field, mines_field, step, flags_left, filename):
-    # TODO: Encrypt data
+
     with open(filename + '.txt', 'w') as file:
         # в первой строке 4 числа: n, m, step, flags_left
         a = [len(player_field), len(player_field[0]), step, flags_left]
@@ -161,7 +161,6 @@ def save_game(player_field, mines_field, step, flags_left, filename):
 
 
 def load_game(filename):
-    # TODO: decrypt data
     try:
         file = open(filename + '.txt', 'r')
         n, m, step, flags_left = map(int, file.readline().rstrip('\n').split())
