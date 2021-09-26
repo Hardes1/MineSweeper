@@ -7,30 +7,33 @@ def greetings():
 
 
 def input_start():
-    print('если хотите начать новую игру - введите \'new\'')
-    print('Если хотите загрузить игру - введите \'load <filename>\', где filename - имя сохранённого файла')
-    print('Если хотите выйти из игры - введите \'exit\'')
+    """Команды, доступные из главного меню."""
+    print('если хотите начать новую игру - введите \'new\'.')
+    print('Если хотите загрузить игру - введите \'load <filename>\', где filename - имя сохранённого файла.')
+    print('Если хотите выйти из игры - введите \'exit\'.')
 
 
 def input_dimensions():
+    """Ввод размерностей при новой игре."""
     print('Введите параметры поля в формате \'n m k\', где n - число строк, m - число столбцов, k - число мин.')
-    print('1<=n<=255, 1<=m<=255, 0<=k<n*m')
+    print('1<=n<=255, 1<=m<=255, 0<=k<n*m.')
 
 
 def input_move():
-    print('\'Save <filename>\' - сохранить файл с именем filename')
-    print('\'main\' - вернуться в главное меню')
+    """Основные команды, когда игрок может ходить."""
+    print('\'Save <filename>\' - сохранить файл с именем filename.')
+    print('\'main\' - вернуться в главное меню.')
     print('\'Open X Y\' - открыть клетку с координатами (X, Y).')
     print('\'Flag X Y\' - поставить флажок в клетку с координатами (X, Y).')
     print('\'Remove X Y\' - удалить флажок из клетки с координатами (X, Y).')
 
 
 def successful_save(filename):
-    print('Ваша игра успешно сохранена и находится в файле: ' + filename)
+    print('Ваша игра успешно сохранена и находится в файле: ' + filename + '.')
 
 
 def error_file_read():
-    print('Файла который вы пытаетесь открыть не существует')
+    print('Файла который вы пытаетесь открыть не существует.')
 
 
 def error_input():
@@ -46,7 +49,7 @@ def error_dimension():
 
 
 def error_open():
-    print('Выбранная клетка уже открыта')
+    print('Выбранная клетка уже открыта.')
 
 
 def error_no_flags():
@@ -54,7 +57,7 @@ def error_no_flags():
 
 
 def error_extra_mines():
-    print('Число мин не может превышать размера поля')
+    print('Число мин не может превышать размера поля.')
 
 
 def error_no_flags_here():
@@ -74,6 +77,8 @@ def end():
 
 
 def can_open_any(field):
+    """Функция проверки того, что ещё можно открыть хотя бы одно поле, если на предыдущем шаге была открыта мина
+    вернёт 0."""
     for i in range(len(field)):
         for j in range(len(field[i])):
             if field[i][j] == '*':
@@ -86,6 +91,8 @@ def can_open_any(field):
 
 
 def print_all_field(field):
+    """Функция, которая печатает все поля. Изначально планировалось, что у каждого поля будет свой цвет, но не все
+    терминалы поддерживают цвет"""
     for i in range(len(field) - 1, -1, -1):
         for j in range(len(field[i])):
             if field[i][j] == '.' or field[i][j].isnumeric() or field[i][j] == '#':
@@ -101,14 +108,6 @@ def check_borders(x, y, n, m):
     return 0 <= x < m and 0 <= y < n
 
 
-def check_mines(field):
-    for i in range(len(field)):
-        for elem in field[i]:
-            if elem == '*':
-                return True
-    return False
-
-
 def lose():
     print('Вы проиграли!')
 
@@ -118,11 +117,12 @@ def win():
 
 
 def again():
-    print('Если хотите в главное меню введите \'main\'')
-    print('Если хотите завершить работу программы введите что угодно, кроме \'main\'')
+    print('Если хотите в главное меню введите \'main\'.')
+    print('Если хотите завершить работу программы введите что угодно, кроме \'main\'.')
 
 
 def encrypt_array(a):
+    """Невероятно классная система шифрования."""
     n = len(a)
     m = len(a[0])
     b = [[0] * m for i in range(n)]
@@ -135,6 +135,7 @@ def encrypt_array(a):
 
 
 def decrypt_array(a):
+    """Невероятно классная система дешифровки."""
     n = len(a)
     m = len(a[0])
     for i in range(n):
@@ -146,7 +147,6 @@ def decrypt_array(a):
 
 
 def save_game(player_field, mines_field, step, flags_left, filename):
-
     with open(filename + '.txt', 'w') as file:
         # в первой строке 4 числа: n, m, step, flags_left
         a = [len(player_field), len(player_field[0]), step, flags_left]
@@ -161,6 +161,7 @@ def save_game(player_field, mines_field, step, flags_left, filename):
 
 
 def load_game(filename):
+    """Функция, отвечающая за загрузку игры из файла."""
     try:
         file = open(filename + '.txt', 'r')
         n, m, step, flags_left = map(int, file.readline().rstrip('\n').split())
@@ -179,7 +180,7 @@ def load_game(filename):
         return -1, -1, -1, -1
 
 
-def play_game(player_field=[], mines_field=[], step=0, flags_left=0):
+def play_game(player_field=None, mines_field=None, step=0, flags_left=0):
     if not player_field or not mines_field:
         flag = True
         while flag:
